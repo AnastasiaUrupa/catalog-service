@@ -1,5 +1,7 @@
 package com.polarbookshop.catalogservice;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.polarbookshop.catalogservice.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +21,18 @@ class CatalogServiceApplicationTests {
 
     @Test
     void whenPostRequestThenBookCreated() {
-        Book book = new Book("1234567899", "Noise", "Daniel Kaneman", 15.75);
-        webTestClient.post()
+        Book request = Book.of("1234567899", "Noise", "Daniel Kaneman", 15.75);
+        Book response = webTestClient.post()
             .uri("/books")
-            .bodyValue(book)
+            .bodyValue(request)
             .exchange()
             .expectStatus().isCreated()
-            .expectBody(Book.class).isEqualTo(book);
+            .expectBody(Book.class).returnResult().getResponseBody();
+        assertThat(response).isNotNull();
+        assertThat(response.isbn()).isEqualTo(request.isbn());
+        assertThat(response.author()).isEqualTo(request.author());
+        assertThat(response.title()).isEqualTo(request.title());
+        assertThat(response.price()).isEqualTo(request.price());
     }
 
 }

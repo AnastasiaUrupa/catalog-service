@@ -22,7 +22,7 @@ class BookValidationTests {
 
     @Test
     void shouldReturnErrorWhenTitleNotProvided() {
-        Book book = new Book("1234567890", "", "Kaneman", 5.90);
+        Book book = Book.of("1234567890", "", "Kaneman", 5.90);
         Set<ConstraintViolation<Book>> errors = validator.validate(book);
         assertThat(errors).hasSize(1);
         assertThat(errors.iterator().next().getMessage()).isEqualTo("The book title must be defined");
